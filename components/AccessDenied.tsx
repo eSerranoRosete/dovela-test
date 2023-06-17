@@ -1,9 +1,10 @@
 import React from "react";
+import { CenterLayout } from "./layout/CenterLayout";
 
 export const AccessDenied = () => {
   return (
-    <div className="w-full h-screen bg-black flex items-center justify-center text-red-600">
-      Access Denied
-    </div>
+    <CenterLayout>
+      <span className="text-red-600">Access Denied</span>
+    </CenterLayout>
   );
 };

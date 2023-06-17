@@ -1,4 +1,6 @@
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
+import delay from "delay";
+import { AnimatedText } from "./AnimatedText";
 
 interface Props {
   label: string;
@@ -8,6 +10,11 @@ interface Props {
 export const ProgressBar = ({ label, time, cb }: Props) => {
   const [percentage, setPercentage] = useState(0);
 
+  const callback = useCallback(async () => {
+    await delay(1000);
+    cb && cb();
+  }, []);
+
   useEffect(() => {
     const interval = setInterval(() => {
       setPercentage((prevPercentage) =>
@@ -15,7 +22,9 @@ export const ProgressBar = ({ label, time, cb }: Props) => {
       );
     }, time);
 
-    if (percentage === 100) cb?.();
+    if (percentage === 100) {
+      callback();
+    }
 
     return () => {
       clearInterval(interval);
@@ -23,14 +32,19 @@ export const ProgressBar = ({ label, time, cb }: Props) => {
   }, [percentage]);
 
   return (
-    <main className="w-full h-screen flex items-center justify-center">
-      <div className="w-72">
-        <p className="mb-2 text-center">{label}</p>
+    <div className="w-72">
+      <p className="mb-2 text-center">
+        <AnimatedText label={label} />
+      </p>
+      <div className="h-3.5 relative text-center">
         <div
           style={{ width: percentage + "%" }}
-          className="h-3 bg-primary"
+          className="bg-primary absolute h-full"
         ></div>
+        <div className="absolute flex items-center justify-center w-full h-full">
+          <p className="mix-blend-difference">{percentage}%</p>
+        </div>
       </div>
-    </main>
+    </div>
   );
 };
